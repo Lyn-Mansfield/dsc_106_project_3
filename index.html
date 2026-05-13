@@ -13,19 +13,22 @@
 <body>
     <div class="tooltip"></div>
     <div class="container">
-        <h1>🌊 Sea Ice Thickness Visualization</h1>
+        <h1>🌊 Sea Ice Coverage and Thickness Loss over Time</h1>
         <div class="subtitle">CMIP6 Model Data | 1850-2000 (Decadal Intervals)</div>
         <p>All decades show ice-sheet data from January 1st.</p>
+        <p>Try comparing to past decades to see the changes in sea ice coverage.</p>
 
         <div class="control-panel">
-            <label for="yearSlider">Select Decade: </label>
+            <label for="yearSlider">Select Decade:</label>
             <input type="range" id="yearSlider" min="1850" max="2000" step="10" value="1850">
             <span id="yearValue">1850</span>
-            
-            <label for="compareSlider">Comparing to:   </label>
+
+            <label for="compareSlider">Compare Coverage To:</label>
             <input type="range" id="compareSlider" min="1850" max="2000" step="10" value="1850">
             <span id="compareValue">1850</span>
         </div>
+
+        <p style="opacity: 1;" id="temp-display"></p>
 
         <div id="visualization" class="visualization">
             <div class="loading">Loading visualization...</div>

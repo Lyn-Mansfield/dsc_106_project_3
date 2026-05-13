@@ -206,6 +206,11 @@ async function loadYear(year) {
         updateVisualization(yearData);
 
         // Update statistics
+        const tempDisplay = document.getElementById('temp-display');
+        if (tempDisplay) {
+            const tempAnomaly = GLOBAL_TEMP_ANOMALY[year];
+            tempDisplay.innerHTML = `<strong>Global average temperature from 1850 to ${year}: </strong><span style="color:${tempDiffColor(tempAnomaly)};font-weight:bold">${tempAnomaly >= 0 ? '+' : ''}${tempAnomaly.toFixed(2)}°C</span>`;
+        }
         updateOverallStats(yearData);
 
     } catch (error) {
