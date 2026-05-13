@@ -92,6 +92,9 @@ label {
 canvas {
     border: 1px solid #ddd;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-image: url('./assets/ice-canvas-bg.png');
+    background-size: cover;
+    background-position: center;
 }
 
 .colorbar {

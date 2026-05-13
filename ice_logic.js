@@ -1,7 +1,9 @@
 // Global variables
-let currentData = null;
+let backgroundImage = null;
 let width = 1200;
 let height = 800;
+
+let currentData = null;
 let baselineData = null;
 let baselineYear = 1850;
 let maxYear = 1850;
@@ -287,8 +289,7 @@ function updateVisualization(data) {
     const cellHeight = height / ny;
 
     // Clear canvas
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, width, height);
+    ctx.clearRect(0, 0, width, height);
 
     // Draw baseline year in gray
     if (baselineData) {
@@ -301,10 +302,10 @@ function updateVisualization(data) {
 
                 if (baseValue !== null && !isNaN(baseValue) && baseValue > 0) {
                     ctx.fillStyle = '#c2c0c0';  // gray for baseline ice
+                    ctx.fillRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
                 } else {
-                    ctx.fillStyle = '#e0e0e0';  // light gray for land/no ice
+                    // ctx.fillStyle = '#e0e0e0';  // light gray for land/no ice
                 }
-                ctx.fillRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
             }
         }
     }
@@ -329,9 +330,11 @@ function updateVisualization(data) {
                 ctx.fillStyle = color;
                 ctx.fillRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
 
+                /*
                 ctx.strokeStyle = '#2c5f8a';
                 ctx.lineWidth = 0.1;
                 ctx.strokeRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+                */
             }
             // If no ice in selected year, leave the gray baseline visible underneath
         }
