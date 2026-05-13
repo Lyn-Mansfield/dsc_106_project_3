@@ -120,8 +120,8 @@ function setupYearSlider() {
         yearDisplay.textContent = year; // Update year selection label
         localStorage.setItem('selectedYear', year);
         maxYear = year; // Update max year for compare slider
-        await clampCompareSlider();
         loadYear(year); // Update map
+        await clampCompareSlider(); // Ensure compare slider doesn't exceed new year, and update if it had to be clamped
     });
 
     slider.setAttribute('list', 'decades');
@@ -161,6 +161,7 @@ function setupCompareSlider() {
         baseTotalCells = 0;
         await loadBaselineData(compareYear);
         if (currentData) {
+            updateTempDisplay();
             updateOverallStats(currentData);
             updateVisualization(currentData)
         }
@@ -206,11 +207,7 @@ async function loadYear(year) {
         updateVisualization(yearData);
 
         // Update statistics
-        const tempDisplay = document.getElementById('temp-display');
-        if (tempDisplay) {
-            const tempAnomaly = GLOBAL_TEMP_ANOMALY[year];
-            tempDisplay.innerHTML = `<strong>Global average temperature from 1850 to ${year}: </strong><span style="color:${tempDiffColor(tempAnomaly)};font-weight:bold">${tempAnomaly >= 0 ? '+' : ''}${tempAnomaly.toFixed(2)}°C</span>`;
-        }
+        updateTempDisplay();
         updateOverallStats(yearData);
 
     } catch (error) {
@@ -583,6 +580,29 @@ function tempDiffColor(value) {
     if (t < 1 / 3) return '#f9c74f';                          // yellow – slight warming
     if (t < 2 / 3) return '#f8961e';                          // orange – moderate warming
     return '#e63946';                                          // red    – significant warming
+}
+
+function updateTempDisplay() {
+    const tempDisplay = document.getElementById('temp-display');
+    const selectedYear = currentData ? currentData.year : null;
+
+    if (tempDisplay) {
+        if (selectedYear === baselineYear) {
+            tempDisplay.style.visibility = 'hidden';
+        } else {
+            tempDisplay.style.visibility = 'visible';
+        }
+
+        const tempSelected = GLOBAL_TEMP_ANOMALY[selectedYear];
+        const tempBaseline = GLOBAL_TEMP_ANOMALY[baselineYear];
+        const tempDiff = (tempSelected !== undefined && tempBaseline !== undefined)
+            ? tempSelected - tempBaseline
+            : null;
+        const tempDiffStr = tempDiff !== null
+            ? `<span style="color:${tempDiffColor(tempDiff)};font-weight:bold">${tempDiff >= 0 ? '+' : ''}${tempDiff.toFixed(2)}°C</span>`
+            : 'N/A';
+        tempDisplay.innerHTML = `<strong>Global average temperature from ${baselineYear} to ${selectedYear}: ${tempDiffStr}`;
+    }
 }
 
 // Update stats for that year at the bottom of the page
