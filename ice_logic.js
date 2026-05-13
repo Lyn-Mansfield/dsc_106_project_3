@@ -1,9 +1,7 @@
 // Global variables
-let currentYear = 1850;
 let currentData = null;
 let width = 1200;
 let height = 800;
-let colorScale = null;
 let baselineData = null;
 let baselineYear = 1850;
 let maxYear = 1850;
@@ -65,7 +63,7 @@ function setupEasterEgg() {
             if (body.style.backgroundImage.includes('rick-roll-rick-ashley.gif')) {
                 body.style.backgroundImage = '';
             } else {
-                body.style.backgroundImage = "url('./assets/rick-roll-rick-ashley.gif')"
+                body.style.backgroundImage = "url('./assets/rick-roll-rick-astley.gif')"
             }
         }
     });
@@ -103,11 +101,6 @@ function setupIceCanvas() {
             `;
         }
     });
-
-    // Create color scale
-    colorScale = d3.scaleSequentialLog()
-        .domain([0.01, 5])
-        .interpolator(d3.interpolateBlues);
 
     // Create colorbar
     createColorbar();
@@ -263,10 +256,12 @@ async function loadRememberedYear() {
 
     if (savedYear) {
         slider.value = savedYear;
+        yearDisplay.textContent = savedYear;
         maxYear = savedYear;
     }
     if (savedCompareYear) {
         compareSlider.value = savedCompareYear;
+        compareDisplay.textContent = savedCompareYear;
         baselineYear = parseInt(savedCompareYear);
         baseValues = [];
         baseTotalCells = 0;
@@ -403,12 +398,12 @@ function handleMouseMove(event) {
         const lat = currentData.lat[flipped_y][flipped_x];
         const lon = currentData.lon[flipped_y][flipped_x];
 
-        updateToolTip(event, iceDepth, baseDepth);
+        updateToolTip(event, iceDepth, baseDepth, lat, lon);
         updatePointStats(lat, lon, iceDepth);
     }
 }
 
-function updateToolTip(event, iceDepth, baseDepth) {
+function updateToolTip(event, iceDepth, baseDepth, lat, lon) {
     // Create a tooltip-like display right under the cursor
     const tooltipX = event.pageX - 16;
     const tooltipY = event.pageY - 16;
@@ -421,18 +416,24 @@ function updateToolTip(event, iceDepth, baseDepth) {
         // Put at the front so that its coordinates are relative to the screen rather than whatever container it's in
         document.body.prepend(tooltip);
     }
+
     const currentHasIce = iceDepth !== null && !isNaN(iceDepth) && iceDepth > 0;
     const baseHasIce = baseDepth !== null && !isNaN(baseDepth) && baseDepth > 0;
 
+
+    const normLon = lon > 180 ? lon - 360 : lon;
+    const latStr = `${Math.abs(lat).toFixed(2)}°${lat >= 0 ? 'N' : 'S'}`;
+    const lonStr = `${Math.abs(normLon).toFixed(2)}°${normLon >= 0 ? 'E' : 'W'}`;
+    const locationStr = `📍 <strong>Location:</strong> ${latStr}, ${lonStr}`;
     // Only show tooltip if at least one year has ice
     if (currentHasIce || baseHasIce) {
-        let tooltipContent;
 
+        let tooltipContent;
         if (currentData.year === baselineYear) {
             // Same year selected — only show one line
             tooltipContent = currentHasIce
-                ? `❄️ ${currentData.year}: ${iceDepth.toFixed(3)} ${currentData.units || 'm'}`
-                : `🌊 ${currentData.year}: No ice`;
+                ? `❄️ ${currentData.year}: ${iceDepth.toFixed(3)} ${currentData.units || 'm'}<br>${locationStr}`
+                : `🌊 ${currentData.year}: No ice<br>${locationStr}`;
         } else {
             // Different years — show both
             const currentLine = currentHasIce
@@ -441,12 +442,12 @@ function updateToolTip(event, iceDepth, baseDepth) {
             const baseLine = baseHasIce
                 ? `❄️ ${baselineYear}: ${baseDepth.toFixed(3)} ${baselineData.units || 'm'}`
                 : `🌊 ${baselineYear}: No ice`;
-            tooltipContent = `${currentLine}<br>${baseLine}`;
+            tooltipContent = `${currentLine}<br>${baseLine}<br>${locationStr}`;
         }
         tooltip.innerHTML = tooltipContent;
         tooltip.style.visibility = 'visible';
     } else {
-        tooltip.innerHTML = `🏔️Land/No Ice`
+        tooltip.innerHTML = `🏔️Land/No Ice<br>${locationStr}`;
         tooltip.style.visibility = 'visible';
     }
 

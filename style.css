@@ -10,7 +10,7 @@ body {
     margin: 0 auto;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
 
@@ -27,7 +27,13 @@ h1 {
 }
 
 .control-panel {
+    display: grid;
+    grid-template-columns: auto 40em auto;
+    grid-template-rows: repeat(2, auto);
+    place-items: center;
+    justify-content: center;
     text-align: center;
+    gap: 0px 16px;
     margin: 20px 0;
     padding: 15px;
     background-color: #f8f9fa;
@@ -35,8 +41,8 @@ h1 {
 }
 
 #yearSlider {
-    width: 60%;
-    margin: 0 15px;
+    width: 100%;
+    box-sizing: border-box;
     cursor: pointer;
 }
 
@@ -52,8 +58,8 @@ h1 {
 }
 
 #compareSlider {
-    width: 60%;
-    margin: 0 15px;
+    width: 100%;
+    box-sizing: border-box;
     cursor: pointer;
 }
 
@@ -69,6 +75,9 @@ h1 {
 }
 
 label {
+    display: block;
+    width: 100%;
+    text-align: right;
     font-weight: bold;
     color: #2c3e50;
 }
@@ -82,7 +91,7 @@ label {
 
 canvas {
     border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .colorbar {
@@ -113,10 +122,19 @@ canvas {
     font-size: 18px;
     color: #7f8c8d;
 }
+
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
+
 .loading::after {
     content: '...';
     animation: pulse 1.5s infinite;
@@ -124,14 +142,14 @@ canvas {
 
 .tooltip {
     visibility: hidden;
-    position: absolute;          
+    position: absolute;
     pointer-events: none;
     display: inline-block;
     width: auto;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     color: white;
     border-radius: 5px;
-    padding: 6px 10px;  
+    padding: 6px 10px;
     font-size: 12px;
     font-family: monospace;
     z-index: 420;
